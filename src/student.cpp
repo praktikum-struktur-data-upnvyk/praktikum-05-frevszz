@@ -238,7 +238,8 @@ using namespace std;
 // =============================================================================
 
 bool push(Stack& s, int nilai) {
-    return false;
+    s.top = new Node{nilai, s.top};
+    return true;
 }
 
 // =============================================================================
@@ -300,7 +301,15 @@ bool push(Stack& s, int nilai) {
 // =============================================================================
 
 bool pop(Stack& s, int& nilai) {
-    return false;
+    if (s.top == nullptr) {
+        return false;
+    }
+
+    Node* node = s.top;
+    nilai = node->data;
+    s.top = node->next;
+    delete node;
+    return true;
 }
 
 // =============================================================================
@@ -347,6 +356,11 @@ bool pop(Stack& s, int& nilai) {
 // =============================================================================
 
 void clear(Stack& s) {
+    while (s.top != nullptr) {
+        Node* node = s.top;
+        s.top = node->next;
+        delete node;
+    }
 }
 
 // =============================================================================
@@ -410,7 +424,25 @@ void clear(Stack& s) {
 // =============================================================================
 
 bool kurungSeimbang(const string& ekspresi) {
-    return false;
+    string buka;
+
+    for (char karakter : ekspresi) {
+        if (karakter == '(' || karakter == '[' || karakter == '{') {
+            buka.push_back(karakter);
+        } else if (karakter == ')' || karakter == ']' || karakter == '}') {
+            if (buka.empty()) return false;
+
+            char pasangan = buka.back();
+            if ((karakter == ')' && pasangan != '(') ||
+                (karakter == ']' && pasangan != '[') ||
+                (karakter == '}' && pasangan != '{')) {
+                return false;
+            }
+            buka.pop_back();
+        }
+    }
+
+    return buka.empty();
 }
 
 // =============================================================================
